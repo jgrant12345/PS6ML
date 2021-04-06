@@ -228,7 +228,7 @@ timeseries_vars = config['timeseries']
 # replace unknown values (-1) with np.nan
 # hint: use df.replace(dict)
 # professor's solution: 1 line
-df.replace(-1,np.nan)
+df = df.replace(-1,np.nan)
 ### ========== TODO : END ========== ###
 
 # process time-invariant variables
@@ -249,7 +249,13 @@ timeseries = df[df['Variable'].isin(timeseries_vars)]
 for var in timeseries_vars :
     values = timeseries[timeseries['Variable'] == var].Value
     # print(timeseries[timeseries['Variable'] == var].Value)
-    features[var] = values.mean
+    var = "mean_" + var
+    # if all cases are nan -> return nan
+    if np.all(values == np.nan):
+        features[var] = np.nan
+    # otherwise
+    else:
+        features[var] = np.nanmean(values)
     # print("hi")
     # print(values.mean)
     
@@ -257,7 +263,7 @@ print(features)
 ### ========== TODO : END ========== ###
 
 # test answer
-# tests.test_process_record(features)
+tests.test_process_record(features)
 
 
 
