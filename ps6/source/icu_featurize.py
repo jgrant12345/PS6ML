@@ -49,7 +49,7 @@ RANDOM_SEED = 3     # seed for train_test_split
 
 ### ========== TODO : START ========== ###
 # after part a : change to 2500 records
-NRECORDS = 1        # number of patient records
+NRECORDS = 2500        # number of patient records
 ### ========== TODO : END ========== ###
 
 FEATURES_TRAIN_FILENAME, LABELS_TRAIN_FILENAME, \
@@ -149,13 +149,43 @@ class Vectorizer(BaseEstimator, TransformerMixin):
             e.g. {'Age': 32, 'Gender': 0, 'mean_HR': 84, ...}.
         """
         
+        static_vars = config['static']
+        timeseries_vars = config['timeseries']
+
         features = {}
         
         ### ========== TODO : START ========== ###
         # part a : feature data record of one patient
         # implement in sandbox below, then copy-paste here
+        df = df.replace(-1,np.nan)
+
+        # process time-invariant variables
+        # keep time-invariant series
+        # nothing to implement here
+        static = df[df['Variable'].isin(static_vars)]
+        for var in static_vars :
+            values = static[static['Variable'] == var].Value
+            features[var] = values.iloc[0]
+
+        ### ========== TODO : START ========== ###
+        # process time series variables
+        # convert time series values to single mean
+        # use above code as a template
+        # professor's solution: 4 lines
+
+        timeseries = df[df['Variable'].isin(timeseries_vars)]
+        for var in timeseries_vars :
+            values = timeseries[timeseries['Variable'] == var].Value
+            # print(timeseries[timeseries['Variable'] == var].Value)
+            var = "mean_" + var
+            # if all cases are nan -> return nan
+            if np.all(values == np.nan):
+                features[var] = np.nan
+            # otherwise
+            else:
+                features[var] = np.nanmean(values)
+
         
-        pass
         ### ========== TODO : END ========== ###
         
         return features
