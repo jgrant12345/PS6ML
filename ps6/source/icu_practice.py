@@ -79,15 +79,38 @@ def score(y_true, y_score, metric='accuracy') :
     ### ========== TODO : START ========== ###
     # part a : compute classifier performance for specified metric
     # professor's solution: 16 lines
-    if metric == 'auroc':
+    score = 1
+    confusionMatrix = confusion_matrix(y_true, y_pred).ravel()
+    tn, fp, fn, tp = confusionMatrix.ravel()
+    precision = tp/(tp + fp)
+    recall = tp/ (tp + fn)
+    total = tn + fp + fn + tp
+    case1 = (tp + fp == 0)
+    case2 = (tp + fn == 0)
+    case3 = (tn + fp == 0)
+    case4 = (total == 0)
+    case5 = (precision+recall == 0)
+    if metric == "auroc":
         score = roc_auc_score(y_true, y_score)
+    elif case1 or case2 or case3 or case4 or case5:
+        score = 0
     else:
     # compute confusion matrix
-        confusionMatrix = confusion_matrix(y_true, y_pred)
-        print('----------------------------')
-        print(confusionMatrix)
-        print("hi")
-        print('----------------------------')
+        if metric == "accuracy":
+            score = (tn + tp)/total
+        elif metric == "f1score":
+            score = 2*(precision*recall)/(precision+recall)
+        elif metric == "precision":
+            score = precision
+        elif metric == "recall":
+            score = recall
+        elif metric == "sensitivity":
+            score = tp/ (tp + fn)
+        elif metric == "specificity":
+            score = tn/(tn + fp)
+    return score
+
+        
     
     # compute scores
     
