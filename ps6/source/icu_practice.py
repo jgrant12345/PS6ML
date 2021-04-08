@@ -79,10 +79,18 @@ def score(y_true, y_score, metric='accuracy') :
     ### ========== TODO : START ========== ###
     # part a : compute classifier performance for specified metric
     # professor's solution: 16 lines
-    
+    if metric == 'auroc':
+        score = roc_auc_score(y_true, y_score)
+    else:
     # compute confusion matrix
+        confusionMatrix = confusion_matrix(y_true, y_pred)
+        print('----------------------------')
+        print(confusionMatrix)
+        print("hi")
+        print('----------------------------')
     
     # compute scores
+    
     
     ### ========== TODO : END ========== ###
 
