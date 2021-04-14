@@ -79,35 +79,48 @@ def score(y_true, y_score, metric='accuracy') :
     ### ========== TODO : START ========== ###
     # part a : compute classifier performance for specified metric
     # professor's solution: 16 lines
-    score = 1
     confusionMatrix = confusion_matrix(y_true, y_pred).ravel()
     tn, fp, fn, tp = confusionMatrix.ravel()
-    precision = tp/(tp + fp)
-    recall = tp/ (tp + fn)
     total = tn + fp + fn + tp
-    case1 = (tp + fp == 0)
-    case2 = (tp + fn == 0)
-    case3 = (tn + fp == 0)
-    case4 = (total == 0)
-    case5 = (precision+recall == 0)
+    
     if metric == "auroc":
         score = roc_auc_score(y_true, y_score)
-    elif case1 or case2 or case3 or case4 or case5:
-        score = 0
     else:
-    # compute confusion matrix
         if metric == "accuracy":
-            score = (tn + tp)/total
+            if total == 0: 
+                score = 0
+            else: 
+                score = (tn + tp)/total
         elif metric == "f1score":
-            score = 2*(precision*recall)/(precision+recall)
+            if (tp + fp == 0) or (tp + fn == 0):
+                score = 0
+            else:
+                precision = tp/(tp + fp)
+                recall = tp/(tp + fn)
+                if (precision + recall == 0):
+                    score = 0
+                else:
+                    score = 2*(precision*recall)/(precision+recall)
         elif metric == "precision":
-            score = precision
+            if ((tp + fp) == 0):
+                score = 0
+            else:
+                score = tp/(tp + fp)
         elif metric == "recall":
-            score = recall
+            if ((tp + fn) == 0):
+                score = 0
+            else:
+                score = recall
         elif metric == "sensitivity":
-            score = tp/ (tp + fn)
+            if ((tp + fn) == 0):
+                score = 0
+            else:
+                score = tp/ (tp + fn)
         elif metric == "specificity":
-            score = tn/(tn + fp)
+            if ((tn + fp) == 0):
+                score = 0
+            else:
+                score = tn/(tn + fp)
     return score
 
         
@@ -283,8 +296,25 @@ def main() :
     #          everything you need is in results variable
     # professor's solution: 12 lines
     
+    resultsDict = {}
+    listOfParams = results['param_clf__C']
+
     for scorer in sorted(scoring) :
-        pass
+        for dataset in ['test', 'train']:
+            sum = [0,0,0,0,0,0,0]
+            # add up everything for a scorer
+            for split in range(search.n_splits_):
+                key = 'split'+str(split)+'_'+dataset+'_'+scorer
+                sum += results[key]
+            index = np.where(sum == max(sum))[0]    
+            nameForDict = dataset + scorer
+            cScore = listOfParams[index]
+            calculateMean = (max(sum)) / 50
+            resultsDict[nameForDict] = (cScore,calculateMean)
+    print(resultsDict)
+            
+        # print("score = ",scorer)
+        # print(results[scorer])
     
     ### ========== TODO : END ========== ###
     
