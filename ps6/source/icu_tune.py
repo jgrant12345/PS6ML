@@ -292,12 +292,19 @@ def main():
         # step 1
         # make pipeline and parameter grid
         # professor's solution: 3-5 lines
-        pass
-        
+        clf = getattr(classifiers, clf_str)(n, d)
+        steps = [('imputer',   preprocessors.Imputer()), ('scaler', preprocessors.Scaler()), (clf_str, clf)]
+        pipe, param_grid = make_pipeline_and_grid(steps)
+
         # step 2
         # tune hyperparameters using CV
         # professor's solution: 3-5 lines
-        pass
+
+        search = GridSearchCV(pipe, param_grid,
+                                scoring=scoring, cv=cv, refit='auroc',
+                                return_train_score=True, n_jobs = -1)
+        search.fit(X, y)
+        results = search.cv_results_
         
         # step 3
         # print optimal hyperparameter setting

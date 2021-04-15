@@ -300,18 +300,19 @@ def main() :
     listOfParams = results['param_clf__C']
 
     for scorer in sorted(scoring) :
+        bestIndex = 0
         for dataset in ['test', 'train']:
             sum = [0,0,0,0,0,0,0]
             # add up everything for a scorer
             for split in range(search.n_splits_):
                 key = 'split'+str(split)+'_'+dataset+'_'+scorer
                 sum += results[key]
-            index = np.where(sum == max(sum))[0]    
+            if dataset=='test':
+                bestIndex = np.where(sum == max(sum))    
             nameForDict = dataset + scorer
-            cScore = listOfParams[index]
-            calculateMean = (max(sum)) / 50
+            cScore = listOfParams[bestIndex]
+            calculateMean = sum[bestIndex]/50
             resultsDict[nameForDict] = (cScore,calculateMean)
-    print(resultsDict)
             
         # print("score = ",scorer)
         # print(results[scorer])
