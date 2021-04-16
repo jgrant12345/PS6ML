@@ -309,17 +309,36 @@ def main():
         # step 3
         # print optimal hyperparameter setting
         # professor's solution: 1 line
-        pass
+        print("Current classifier: ", clf_str) 
+        print("Optimal hyperpatameter setting: ", search.best_params_)
         
         # step 4
         # store results associated with optimal hyperparameter setting
+        print("Results are ", results)
+        print("-----------------")
         dct = {}
         for scorer in sorted(scoring) :
-            # professor's solution: 3 lines
-            pass
-            
-            scores[clf_str] = dct
         
+            # we need to implement a dictionary that contains the following four newString metrics
+            metricName = scorer
+            metric1 = 'mean_train_' + metricName 
+            metric2 = 'mean_test_' + metricName 
+            metric3 = 'std_train_' + metricName 
+            metric4 = 'std_test_' + metricName 
+            # professor's solution: 3 lines
+            # use best index
+            bestIndex =results[search.best_index_]
+            # do something with this
+            dct[metric1] = results[metric1][bestIndex]
+            dct[metric2] = results[metric2][bestIndex]
+            dct[metric3] = results[metric3][bestIndex]
+            dct[metric4] = results[metric4][bestIndex]
+        scores[clf_str] = dct
+        
+
+
+
+
         # dump to file
         # uncomment the line to dump best estimator to file
         # assumes you named your GridSearchCV object 'search'
