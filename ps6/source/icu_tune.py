@@ -314,8 +314,6 @@ def main():
         
         # step 4
         # store results associated with optimal hyperparameter setting
-        print("Results are ", results)
-        print("-----------------")
         dct = {}
         for scorer in sorted(scoring) :
         
@@ -326,14 +324,15 @@ def main():
             metric3 = 'std_train_' + metricName 
             metric4 = 'std_test_' + metricName 
             # professor's solution: 3 lines
-            # use best index
-            bestIndex =results[search.best_index_]
+            # 1 check that this is getting the correct index
+            bestIndex =search.best_index_
             # do something with this
             dct[metric1] = results[metric1][bestIndex]
             dct[metric2] = results[metric2][bestIndex]
             dct[metric3] = results[metric3][bestIndex]
             dct[metric4] = results[metric4][bestIndex]
         scores[clf_str] = dct
+    
         
 
 
@@ -346,7 +345,7 @@ def main():
         # dump(search.best_estimator_, filename)
     ### ========== TODO : END ========== ###
     
-    print()
+    print(score)
     
     #========================================
     # plot results
