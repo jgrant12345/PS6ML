@@ -91,9 +91,14 @@ def get_test_scores(clf, X, y, n_bootstraps=1, metrics=['accuracy']) :
     scores = {}
     
     ### ========== TODO : START ========== ###
-    # part a : find score on on full data set
+    # part a : find score on full data set
     #          find bootstrap scores on resampled data set
     # professor's solution: 7 lines
+    for metric in metrics:
+        list = []
+        bootX, bootY = resample(X,y, random_state = n_bootstraps, n_samples = n_bootstraps)
+            
+
     #
     # hint: use sklearn.utils.resample to sample
     #       set random_state to the bootstrap iteration
@@ -250,6 +255,11 @@ def main():
         # hint: use np.percentile to compute percentiles
         
         scores_clf = {}
+        for metric in METRICS:
+            scores_clf[METRICS] = test_scores[metric]
+            scores_clf['lower_' + METRICS] = np.percentile(test_scores[metric+'_boot'], 2.5)
+            scores_clf['upper_' + METRICS] = np.percentile(test_scores[metric+'_boot'], 97.5)
+
         
         
         ### ========== TODO : END ========== ###
