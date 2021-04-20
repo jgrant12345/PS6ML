@@ -28,7 +28,8 @@ import icu_config
 from icu_practice import score, METRICS
 import classifiers
 
-
+import operator
+from collections import OrderedDict
 
 ######################################################################
 # globals
@@ -95,11 +96,14 @@ def get_test_scores(clf, X, y, n_bootstraps=1, metrics=['accuracy']) :
     #          find bootstrap scores on resampled data set
     # professor's solution: 7 lines
     for metric in metrics:
+        list = []
         for iteration in range(n_bootstraps):
-            list = []
-            bootX, bootY = resample(X,y, random_state = iteration, n_samples = n_bootstraps)
-            
-
+            booty, bootyPred = resample(y,y_pred,random_state = iteration, n_samples = n_bootstraps)
+            bootScore = score(booty, bootyPred, metric)
+            list.append(bootScore)
+        regScore = score(y, y_pred, metric)
+        scores[metric  + "_boot"] = list
+        scores[metric] = regScore
     #
     # hint: use sklearn.utils.resample to sample
     #       set random_state to the bootstrap iteration
@@ -257,9 +261,9 @@ def main():
         
         scores_clf = {}
         for metric in METRICS:
-            scores_clf[METRICS] = test_scores[metric]
-            scores_clf['lower_' + METRICS] = np.percentile(test_scores[metric+'_boot'], 2.5)
-            scores_clf['upper_' + METRICS] = np.percentile(test_scores[metric+'_boot'], 97.5)
+            scores_clf[metric] = test_scores[metric]
+            scores_clf['lower_' + metric] = np.percentile(test_scores[metric+'_boot'], 2.5)
+            scores_clf['upper_' + metric] = np.percentile(test_scores[metric+'_boot'], 97.5)
 
         
         
@@ -289,6 +293,20 @@ def main():
     # part e : identify important features
     #          print to screen
     # professor's solution: 8 lines
+    absCoef = []
+    for index in range(len(coef)):
+        absCoef.append(abs(coef[index]))
+    print(absCoef)
+
+    # build dictionary
+    for index in range(5):
+        largestIndex = np.argmax(absCoef)
+        print(feature_names[largestIndex] + " : ", coef[largestIndex])
+        absCoef = np.delete(absCoef, largestIndex)
+        coef = np.delete(coef, largestIndex)
+        feature_names = feature_names[:largestIndex] + feature_names[largestIndex:]
+  
+
     
     
     
