@@ -293,18 +293,21 @@ def main():
     # part e : identify important features
     #          print to screen
     # professor's solution: 8 lines
-    absCoef = []
-    for index in range(len(coef)):
-        absCoef.append(abs(coef[index]))
-    print(absCoef)
 
     # build dictionary
+    print("Most Increased Risk:")
     for index in range(5):
-        largestIndex = np.argmax(absCoef)
+        largestIndex = np.argmax(coef)
         print(feature_names[largestIndex] + " : ", coef[largestIndex])
-        absCoef = np.delete(absCoef, largestIndex)
         coef = np.delete(coef, largestIndex)
         feature_names = feature_names[:largestIndex] + feature_names[largestIndex:]
+
+    print("Most Decreased Risk:")
+    for index in range(5):
+        smallestIndex = np.argmin(coef)
+        print(feature_names[smallestIndex] + " : ", coef[smallestIndex])
+        coef = np.delete(coef, smallestIndex)
+        feature_names = feature_names[:smallestIndex] + feature_names[smallestIndex:]
   
 
     
